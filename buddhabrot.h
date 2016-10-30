@@ -17,7 +17,7 @@ struct Buddhabrot
 	float radius;
 	int Ndim;
 	
-	int ***hitcount;
+	int *hitcount;
 		
 	int NiterationsR; //= 800; //12700; // R
 	int NiterationsG; //= 200; //3700;  // G
@@ -63,13 +63,7 @@ struct Buddhabrot
 
 void Buddhabrot::allocator(int w, int h, int d)
 {
-	hitcount = new int**[w];
-	for(int i=0; i<w; i++) 
-	{
-		hitcount[i] = new int*[h];
-		
-		for(int j=0; j<h; j++) hitcount[i][j] = new int [d];
-	}
+	hitcount = new int[w*h*d];
 }
 
 float Buddhabrot::saturate(float x)
@@ -94,9 +88,9 @@ int Buddhabrot::incrementcount(float x, float y, int countr)
 		intv=(int)(((y-minY)/(maxY-minY))*height);
 	
 		
-		if( countr < NiterationsB ) hitcount[intu][intv][2]++;
-		else if( countr < NiterationsG ) hitcount[intu][intv][1]++;
-		else if( countr < NiterationsR ) hitcount[intu][intv][0]++;
+		if( countr < NiterationsB ) hitcount[intu + width*(intv + height*2)]++;
+		else if( countr < NiterationsG ) hitcount[intu + width*(intv + height*1)]++;
+		else if( countr < NiterationsR ) hitcount[intu + width*(intv + height*0)]++;
 	}
 		
 	return countr;	
@@ -111,7 +105,7 @@ float Buddhabrot::Finddublmax(int k,int w, int h)
 	{
 		for(int j=0; j<h; j++)
 		{
-			if(hitcount[i][j][k]>dmax) dmax=hitcount[i][j][k]+1;
+			if(hitcount[i + width*(j + height*k)]>dmax) dmax=hitcount[i + width*(j + height*k)]+1;
 		}
 	} 
 	//std::cout<<"dublmax="<<dmax<<std::endl;
@@ -133,7 +127,7 @@ void Buddhabrot::Normalizehitcount()
 		{
 			for(int k=0; k<Ndim; k++)
 			{
-				hitcount[i][j][k] = 65535*smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[i][j][k]));			
+				hitcount[i + width*(j + height*k)] = 65535*smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[i + width*(j + height*k)]));			
 			}		
 		}
 	} 
@@ -153,7 +147,7 @@ void Buddhabrot::fill(/* float Zinitialx, float Zinitialy, float AngleRot*/)
 		for(int j=0; j<height; j++)
 		{
 			for(int k=0; k<Ndim; k++)
-				hitcount[i][j][k]=0;
+				hitcount[i + width*(j + height*k)]=0;
 		}
 	}
 	
