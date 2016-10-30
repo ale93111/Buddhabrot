@@ -6,6 +6,7 @@
 #include <complex>
 #include <random>
 #include <algorithm> // std::max
+#include <vector>
 
 #define PI 3.14159265
 
@@ -55,7 +56,7 @@ struct Buddhabrot
 	
 	~Buddhabrot()
 	{
-		delete hitcount
+		delete hitcount;
 	}
 	
 };
