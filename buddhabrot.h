@@ -92,7 +92,6 @@ int Buddhabrot::incrementcount(float x, float y, int countr)
 	return countr;	
 }
 
-
 float Buddhabrot::Finddublmax(int k,int w, int h)
 {
 	float dmax=0.0;
@@ -108,6 +107,7 @@ float Buddhabrot::Finddublmax(int k,int w, int h)
 		
 	return dmax;
 }
+
 
 void Buddhabrot::Normalizehitcount() 
 {
@@ -230,5 +230,5 @@ void Buddhabrot::fill(/* float Zinitialx, float Zinitialy, float AngleRot*/)
 		}
 	}
 	
-	Normalizehitcount();
+	//Normalizehitcount();
 }

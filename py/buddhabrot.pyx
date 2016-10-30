@@ -47,11 +47,15 @@ cdef extern from "/home/alessandro/Documents/Buddhabrot/buddhabrot.h":
 cdef class PyBuddhabrot:
     cdef Buddhabrot c_buddhabrot      # hold a C++ instance which we're wrapping
     
-    def __cinit__(self, int Np, int w, int h, int NR=800, int NG=200, int NB=50):
+    def __cinit__(self, int Np, int w, int h, int NR=800, int NG=200, int NB=50,float mY=-2.0, float MY=2.0):
         self.c_buddhabrot = Buddhabrot(Np,w,h,NR,NG,NB)
+        self.c_buddhabrot.minY = mY
+        self.c_buddhabrot.maxY = MY 
             
     def pyfill(self):
         return self.c_buddhabrot.fill()
+    def pynormalize(self):
+        return self.c_buddhabrot.Normalizehitcount()
 
     @property
     def Npoints(self):
@@ -74,4 +78,19 @@ cdef class PyBuddhabrot:
     @property
     def NiterationsB(self):
         return self.c_buddhabrot.NiterationsB
-   
+        
+    @property
+    def minX(self):
+        return self.c_buddhabrot.minX
+    @property
+    def minY(self):
+        return self.c_buddhabrot.minY
+    @property
+    def maxX(self):
+        return self.c_buddhabrot.maxX
+    @property
+    def maxY(self):
+        return self.c_buddhabrot.maxY
+    @property
+    def radius(self):
+        return self.c_buddhabrot.radius
