@@ -17,7 +17,7 @@ struct Buddhabrot
 	float radius;
 	int Ndim;
 	
-	int *hitcount;
+	std::vector<int> hitcount;
 		
 	int NiterationsR; //= 800; //12700; // R
 	int NiterationsG; //= 200; //3700;  // G
@@ -54,16 +54,12 @@ struct Buddhabrot
 		
 	}	
 	
-	~Buddhabrot()
-	{
-		delete hitcount;
-	}
 	
 };
 
 void Buddhabrot::allocator(int w, int h, int d)
 {
-	hitcount = new int[w*h*d];
+	hitcount.resize( w*h*d, 0);
 }
 
 float Buddhabrot::saturate(float x)
@@ -88,9 +84,9 @@ int Buddhabrot::incrementcount(float x, float y, int countr)
 		intv=(int)(((y-minY)/(maxY-minY))*height);
 	
 		
-		if( countr < NiterationsB ) hitcount[intu + width*(intv + height*2)]++;
-		else if( countr < NiterationsG ) hitcount[intu + width*(intv + height*1)]++;
-		else if( countr < NiterationsR ) hitcount[intu + width*(intv + height*0)]++;
+		if( countr < NiterationsB ) hitcount[2 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsG ) hitcount[1 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsR ) hitcount[0 + Ndim*(intv + height*intu)]++;
 	}
 		
 	return countr;	
@@ -105,7 +101,7 @@ float Buddhabrot::Finddublmax(int k,int w, int h)
 	{
 		for(int j=0; j<h; j++)
 		{
-			if(hitcount[i + width*(j + height*k)]>dmax) dmax=hitcount[i + width*(j + height*k)]+1;
+			if(hitcount[k + Ndim*(j + height*i)]>dmax) dmax=hitcount[k + Ndim*(j + height*i)]+1;
 		}
 	} 
 	//std::cout<<"dublmax="<<dmax<<std::endl;
@@ -127,7 +123,7 @@ void Buddhabrot::Normalizehitcount()
 		{
 			for(int k=0; k<Ndim; k++)
 			{
-				hitcount[i + width*(j + height*k)] = 65535*smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[i + width*(j + height*k)]));			
+				hitcount[k + Ndim*(j + height*i)] = 65535*smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[k + Ndim*(j + height*i)]));			
 			}		
 		}
 	} 
@@ -147,7 +143,7 @@ void Buddhabrot::fill(/* float Zinitialx, float Zinitialy, float AngleRot*/)
 		for(int j=0; j<height; j++)
 		{
 			for(int k=0; k<Ndim; k++)
-				hitcount[i + width*(j + height*k)]=0;
+				hitcount[k + Ndim*(j + height*i)]=0;
 		}
 	}
 	
