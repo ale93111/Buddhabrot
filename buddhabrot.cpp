@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-	int Npoints = 10000000;
+	int Npoints = 100000000;
 	long w = 1024;
 	long h = 1024;
 	
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 	//PyObject* img = PyArray_Reshape(PyArray_DATA((PyArrayObject*)pyhitcount), &shape);
 	
 	
-	/*
+	
 	Py_DECREF(pyhitcount);
 	Py_DECREF(path);
 	Py_DECREF(sys);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	Py_DECREF(plot_func);
 	Py_DECREF(pArgTuple);
 	Py_DECREF(pValue);
-	*/
+	
   	Py_Finalize();
 
 	return 0;
