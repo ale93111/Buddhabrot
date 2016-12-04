@@ -20,14 +20,14 @@ def load(name):
     return b
 #%%
 b = []
-for i in range(10):
+for i in range(3):
     b.append(load("b"+str(i)+".png"))
     
 b = np.array(b)
 
 plt.imshow(b[0])
 #%%
-b_n = cv2.fastNlMeansDenoisingColoredMulti(b, imgToDenoiseIndex=5, temporalWindowSize=5, h=1, templateWindowSize=7, searchWindowSize=21)
+b_n = cv2.fastNlMeansDenoisingColoredMulti(b, imgToDenoiseIndex=1, temporalWindowSize=1, h=3, templateWindowSize=7, searchWindowSize=21)
 #%%
 plt.figure(figsize=(9, 9))
 plt.imshow(b_n)

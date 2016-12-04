@@ -11,12 +11,14 @@
 
 int main(int argc, char *argv[])
 {
-	int Npoints = 100000000;
-	long w = 1024;
-	long h = 1024;
+	int Npoints = 500000000;
+	long w = 3200;
+	long h = 2400;
 	
 	Buddhabrot b(Npoints,w,h);
-	
+	b.minY = -1.5f;
+	b.maxY =  1.5f;
+
 	b.fill();
 	b.Normalizehitcount();
 	
@@ -37,11 +39,11 @@ int main(int argc, char *argv[])
 	PyList_Append(path, PyBytes_FromString("/home/alessandro/Documenti/Buddhabrot/"));
 	
 	const char* Name = "plot";
-	pName = PyBytes_FromString(argv[1]);   //Get the name of the module
+	pName = PyBytes_FromString("plot"/*argv[1]*/);   //Get the name of the module
 	pModule = PyImport_Import(pName);     //Get the module
 
 	if (pModule != NULL) {
-		plot_func = PyObject_GetAttrString(pModule, argv[2]);   //Get the function by its name
+		plot_func = PyObject_GetAttrString(pModule, "plot"/*argv[2]*/);   //Get the function by its name
 		
 		if (plot_func && PyCallable_Check(plot_func)) 
 		{

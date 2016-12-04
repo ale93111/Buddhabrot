@@ -11,6 +11,6 @@ def plot(hitcount,w,h):
     print img.dtype
     #plt.figure(figsize=(9, 9))
     #plt.imshow(img)
-    plt.imsave(path+"b0.png",img)
+    plt.imsave(path+"b.png",img)
     
     return 0
