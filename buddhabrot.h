@@ -85,8 +85,8 @@ int Buddhabrot::incrementcount(float x, float y, int countr)
 	
 		
 		if( countr < NiterationsB ) hitcount[2 + Ndim*(intv + height*intu)]++;
-		if( countr < NiterationsG ) hitcount[1 + Ndim*(intv + height*intu)]++;
-		if( countr < NiterationsR ) hitcount[0 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsG ) hitcount[1 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsR ) hitcount[0 + Ndim*(intv + height*intu)]++;
 	}
 		
 	return countr;	

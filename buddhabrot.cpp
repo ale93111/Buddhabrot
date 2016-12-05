@@ -8,16 +8,20 @@
 #include "buddhabrot.h"
 
 
+void init_numpy()
+{
+	import_array();
+}
 
 int main(int argc, char *argv[])
 {
-	int Npoints = 500000000;
-	long w = 3200;
-	long h = 2400;
+	int Npoints = 10000000;
+	long w = 1024;//3200;
+	long h = 1024;//2400;
 	
 	Buddhabrot b(Npoints,w,h);
-	b.minY = -1.5f;
-	b.maxY =  1.5f;
+	//b.minY = -1.5f;
+	//b.maxY =  1.5f;
 
 	b.fill();
 	b.Normalizehitcount();
@@ -28,7 +32,7 @@ int main(int argc, char *argv[])
 	npy_intp dims = 3*w*h;
 	
 	Py_Initialize();
-	import_array();
+	init_numpy();
 	PyRun_SimpleString("from time import time,ctime\n" "print 'Today is',ctime(time())\n");
 	
 	PyObject* pyhitcount = PyArray_SimpleNewFromData(1, &dims, NPY_INT, hitcount);
