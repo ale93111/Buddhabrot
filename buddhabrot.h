@@ -17,7 +17,7 @@ struct Buddhabrot
 	float radius;
 	int Ndim;
 	
-	std::vector<int> hitcount;
+	std::vector<float> hitcount;
 		
 	int NiterationsR; //= 800; //12700; // R
 	int NiterationsG; //= 200; //3700;  // G
@@ -48,7 +48,7 @@ struct Buddhabrot
 		NiterationsG = NG;
 		NiterationsB = NB;
 		Niterations  = std::max( NiterationsR, std::max( NiterationsG, NiterationsB ));
-		Miterations  = 0;
+		Miterations  = 5;
 		
 		allocator(width, height, Ndim);
 		
@@ -85,8 +85,8 @@ int Buddhabrot::incrementcount(float x, float y, int countr)
 	
 		
 		if( countr < NiterationsB ) hitcount[2 + Ndim*(intv + height*intu)]++;
-		if( countr < NiterationsG ) hitcount[1 + Ndim*(intv + height*intu)]++;
-		if( countr < NiterationsR ) hitcount[0 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsG ) hitcount[1 + Ndim*(intv + height*intu)]++;
+		else if( countr < NiterationsR ) hitcount[0 + Ndim*(intv + height*intu)]++;
 	}
 		
 	return countr;	
@@ -123,7 +123,7 @@ void Buddhabrot::Normalizehitcount()
 		{
 			for(int k=0; k<Ndim; k++)
 			{
-				hitcount[k + Ndim*(j + height*i)] = 65535*smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[k + Ndim*(j + height*i)]));			
+				hitcount[k + Ndim*(j + height*i)] = smoothstep(0, sqrt(dublmax[k]), sqrt(hitcount[k + Ndim*(j + height*i)]));			
 			}		
 		}
 	} 

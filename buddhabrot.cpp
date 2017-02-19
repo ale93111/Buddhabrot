@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <string>
 #include <python2.7/Python.h>
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
@@ -7,11 +8,14 @@
 
 #include "buddhabrot.h"
 
-
+void init()
+{
+	import_array();
+}
 
 int main(int argc, char *argv[])
 {
-	int Npoints = 500000000;
+	int Npoints = 50000000;
 	long w = 3200;
 	long h = 2400;
 	
@@ -28,32 +32,35 @@ int main(int argc, char *argv[])
 	npy_intp dims = 3*w*h;
 	
 	Py_Initialize();
-	import_array();
+	init();
 	PyRun_SimpleString("from time import time,ctime\n" "print 'Today is',ctime(time())\n");
 	
-	PyObject* pyhitcount = PyArray_SimpleNewFromData(1, &dims, NPY_INT, hitcount);
+	PyObject* a = PyArray_SimpleNewFromData(1, &dims, NPY_FLOAT, (void*)hitcount);
 
-	PyObject *pName, *pModule, *plot_func, *pArgTuple, *pValue;
-	PyObject *sys = PyImport_ImportModule("sys");
-	PyObject *path = PyObject_GetAttrString(sys, "path");
-	PyList_Append(path, PyBytes_FromString("/home/alessandro/Documenti/Buddhabrot/"));
-	
-	const char* Name = "plot";
-	pName = PyBytes_FromString("plot"/*argv[1]*/);   //Get the name of the module
-	pModule = PyImport_Import(pName);     //Get the module
+	PyObject* shape = PyTuple_New(3);
+	PyTuple_SetItem(shape, 0, PyLong_FromSize_t(w));
+	PyTuple_SetItem(shape, 1, PyLong_FromSize_t(h));
+	PyTuple_SetItem(shape, 2, PyLong_FromSize_t(3));
+	PyObject *img = PyArray_Reshape((PyArrayObject*)a,shape);
+
+	PyObject *pModule, *plot_func, *pArgTuple, *pValue, *func_imsave;
+	//PyObject *sys = PyImport_ImportModule("sys");
+	//PyObject *path = PyObject_GetAttrString(sys, "path");
+	//PyList_Append(path, PyBytes_FromString("/home/alessandro/Documenti/Buddhabrot/"));
+	   
+	pModule = PyImport_ImportModule("matplotlib.pyplot"); //Get the module
 
 	if (pModule != NULL) {
-		plot_func = PyObject_GetAttrString(pModule, "plot"/*argv[2]*/);   //Get the function by its name
-		
+		plot_func = PyObject_GetAttrString(pModule, "imshow");   //Get the function by its name
+		func_imsave = PyObject_GetAttrString(pModule, "imsave");
+
 		if (plot_func && PyCallable_Check(plot_func)) 
 		{
 			//Set up a tuple that will contain the function arguments.
-			pArgTuple = PyTuple_New(3);
+			pArgTuple = PyTuple_New(1);
 
 			//Set the argument tuple to contain the two input tuples
-			PyTuple_SetItem(pArgTuple, 0, pyhitcount);
-			PyTuple_SetItem(pArgTuple, 1, PyInt_FromLong(w));
-			PyTuple_SetItem(pArgTuple, 2, PyInt_FromLong(h));
+			PyTuple_SetItem(pArgTuple, 0, img);
 
 			//Call the python function
 			pValue = PyObject_CallObject(plot_func, pArgTuple);
@@ -65,18 +72,22 @@ int main(int argc, char *argv[])
 		std::cout << "Error" << std::endl;
 	}
 
+	std::string filename = "./a.png";
+	PyObject* pyfilename = PyString_FromString(filename.c_str());
+
+	PyObject* args = PyTuple_New(2);
+	PyTuple_SetItem(args, 0, pyfilename);
+	PyTuple_SetItem(args, 1, img);
+
+	PyObject* res = PyObject_CallObject(func_imsave, args);
+
 
 	std::cout << "fine" << std::endl;	
-	//PyArrayObject* array = (PyArrayObject *)PyArray_GETCONTIGUOUS(hitcount);
-	//PyObject shape[] = {w,h,3};
-	//PyObject* img = PyArray_Reshape(PyArray_DATA((PyArrayObject*)pyhitcount), &shape);
 	
-	
-	
-	Py_DECREF(pyhitcount);
-	Py_DECREF(path);
-	Py_DECREF(sys);
-	Py_DECREF(pName);
+	Py_DECREF(res);
+	Py_DECREF(pyfilename);
+	Py_DECREF(args);
+	Py_DECREF(img);
 	Py_DECREF(pModule);
 	Py_DECREF(plot_func);
 	Py_DECREF(pArgTuple);
